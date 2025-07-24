@@ -43,8 +43,8 @@ jobs:
           CGO_ENABLED: 0
           SRC_PATH: github.com/TheShadowVOX/shadownode
         run: |
-          go build -v -trimpath -ldflags="-s -w -X ${SRC_PATH}/system.Version=dev-${GITHUB_SHA:0:7}" -o dist/wings ${SRC_PATH}
-          go build -v -trimpath -ldflags="-X ${SRC_PATH}/system.Version=dev-${GITHUB_SHA:0:7}" -o dist/wings_debug ${SRC_PATH}
+          go build -v -trimpath -ldflags="-s -w -X ${SRC_PATH}/system.Version=dev-${GITHUB_SHA:0:7}" -o dist/shadownode ${SRC_PATH}
+          go build -v -trimpath -ldflags="-X ${SRC_PATH}/system.Version=dev-${GITHUB_SHA:0:7}" -o dist/shadownode_debug ${SRC_PATH}
           chmod 755 dist/*
 
       - name: go test
@@ -65,12 +65,12 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ (github.ref == 'refs/heads/develop' || github.event_name == 'pull_request') && matrix.go == '1.23.7' }}
         with:
-          name: wings_linux_${{ matrix.goarch }}
-          path: dist/wings
+          name: shadownode_linux_${{ matrix.goarch }}
+          path: dist/shadownode
 
       - name: Upload Debug Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ (github.ref == 'refs/heads/develop' || github.event_name == 'pull_request') && matrix.go == '1.23.7' }}
         with:
-          name: wings_linux_${{ matrix.goarch }}_debug
-          path: dist/wings_debug
+          name: shadownode_linux_${{ matrix.goarch }}_debug
+          path: dist/shadownode_debug

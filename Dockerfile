@@ -11,8 +11,8 @@ RUN CGO_ENABLED=0 go build \
     -ldflags="-s -w -X github.com/TheShadowVOX/shadownode/system.Version=$VERSION" \
     -v \
     -trimpath \
-    -o wings \
-    wings.go
+    -o shadownode \
+    shadownode.go
 RUN echo "ID=\"distroless\"" > /etc/os-release
 
 # Stage 2 (Final)
@@ -23,6 +23,6 @@ COPY --from=builder /etc/mime.types /etc/mime.types
 COPY --from=builder /app/shadownode /usr/bin/
 
 ENTRYPOINT ["/usr/bin/shadownode"]
-CMD ["--config", "/etc/pterodactyl/config.yml"]
+CMD ["--config", "/etc/shadownode/config.yml"]
 
 EXPOSE 8080 2022

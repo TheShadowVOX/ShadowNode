@@ -106,7 +106,7 @@ func (c *client) requestOnce(ctx context.Context, method, path string, body io.R
 	}
 
 	req.Header.Set("User-Agent", fmt.Sprintf("ShadowNode/v%s (id:%s)", system.Version, c.tokenId))
-	req.Header.Set("Accept", "application/vnd.pterodactyl.v1+json")
+	req.Header.Set("Accept", "application/vnd.shadownode.v1+json")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s.%s", c.tokenId, c.token))
 

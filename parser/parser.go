@@ -108,7 +108,7 @@ type ConfigurationFile struct {
 	Parser   ConfigurationParser            `json:"parser"`
 	Replace  []ConfigurationFileReplacement `json:"replace"`
 
-	// Tracks Wings' configuration so that we can quickly get values
+	// Tracks ShadowNode' configuration so that we can quickly get values
 	// out of it when variables request it.
 	configuration []byte
 }
@@ -516,8 +516,8 @@ func (f *ConfigurationFile) parseTextFile(file ufs.File) error {
 // the value was escaped or not to begin with before setting it, which I suppose
 // can work but jesus that is going to be some annoyingly complicated logic?
 //
-// @see https://github.com/pterodactyl/panel/issues/2308 (original)
-// @see https://github.com/pterodactyl/panel/issues/3009 ("bug" introduced as result)
+// @see https://github.com/shadownode/panel/issues/2308 (original)
+// @see https://github.com/shadownode/panel/issues/3009 ("bug" introduced as result)
 func (f *ConfigurationFile) parsePropertiesFile(file ufs.File) error {
 	b, err := io.ReadAll(file)
 	if err != nil {

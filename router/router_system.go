@@ -16,7 +16,7 @@ import (
 	"github.com/TheShadowVOX/shadownode/system"
 )
 
-// Returns information about the system that wings is running on.
+// Returns information about the system that shadownode is running on.
 func getSystemInformation(c *gin.Context) {
 	i, err := system.GetSystemInformation()
 	if err != nil {
@@ -45,7 +45,7 @@ func getSystemInformation(c *gin.Context) {
 }
 
 // Returns all the servers that are registered and configured correctly on
-// this wings instance.
+// this shadownode instance.
 func getAllServers(c *gin.Context) {
 	servers := middleware.ExtractManager(c).All()
 	out := make([]server.APIResponse, len(servers), len(servers))
@@ -55,7 +55,7 @@ func getAllServers(c *gin.Context) {
 	c.JSON(http.StatusOK, out)
 }
 
-// Creates a new server on the wings daemon and begins the installation process
+// Creates a new server on the shadownode daemon and begins the installation process
 // for it.
 func postCreateServer(c *gin.Context) {
 	manager := middleware.ExtractManager(c)
@@ -117,7 +117,7 @@ type postUpdateConfigurationResponse struct {
 	Applied bool `json:"applied"`
 }
 
-// Updates the running configuration for this Wings instance.
+// Updates the running configuration for this ShadowNode instance.
 func postUpdateConfiguration(c *gin.Context) {
 	cfg := config.Get()
 

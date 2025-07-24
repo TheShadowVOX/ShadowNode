@@ -28,7 +28,7 @@ import (
 	"github.com/TheShadowVOX/shadownode/system"
 )
 
-const DefaultLocation = "/etc/pterodactyl/config.yml"
+const DefaultLocation = "/etc/shadownode/config.yml"
 
 // DefaultTLSConfig sets sane defaults to use when configuring the internal
 // webserver to listen for public connections.
@@ -72,7 +72,7 @@ type SftpConfiguration struct {
 }
 
 // ApiConfiguration defines the configuration for the internal API that is
-// exposed by the Wings webserver.
+// exposed by the ShadowNode webserver.
 type ApiConfiguration struct {
 	// The interface that the internal webserver should bind to.
 	Host string `default:"0.0.0.0" yaml:"host"`
@@ -100,9 +100,9 @@ type ApiConfiguration struct {
 }
 
 // RemoteQueryConfiguration defines the configuration settings for remote requests
-// from Wings to the Panel.
+// from ShadowNode to the Panel.
 type RemoteQueryConfiguration struct {
-	// The amount of time in seconds that Wings should allow for a request to the Panel API
+	// The amount of time in seconds that ShadowNode should allow for a request to the Panel API
 	// to complete. If this time passes the request will be marked as failed. If your requests
 	// are taking longer than 30 seconds to complete it is likely a performance issue that
 	// should be resolved on the Panel, and not something that should be resolved by upping this
@@ -110,7 +110,7 @@ type RemoteQueryConfiguration struct {
 	Timeout int `default:"30" yaml:"timeout"`
 
 	// The number of servers to load in a single request to the Panel API when booting the
-	// Wings instance. A single request is initially made to the Panel to get this number
+	// ShadowNode instance. A single request is initially made to the Panel to get this number
 	// of servers, and then the pagination status is checked and additional requests are
 	// fired off in parallel to request the remaining pages.
 	//
@@ -123,33 +123,33 @@ type RemoteQueryConfiguration struct {
 
 // SystemConfiguration defines basic system configuration settings.
 type SystemConfiguration struct {
-	// The root directory where all of the pterodactyl data is stored at.
-	RootDirectory string `default:"/var/lib/pterodactyl" json:"-" yaml:"root_directory"`
+	// The root directory where all of the shadownode data is stored at.
+	RootDirectory string `default:"/var/lib/shadownode" json:"-" yaml:"root_directory"`
 
-	// Directory where logs for server installations and other wings events are logged.
-	LogDirectory string `default:"/var/log/pterodactyl" json:"-" yaml:"log_directory"`
+	// Directory where logs for server installations and other shadownode events are logged.
+	LogDirectory string `default:"/var/log/shadownode" json:"-" yaml:"log_directory"`
 
 	// Directory where the server data is stored at.
-	Data string `default:"/var/lib/pterodactyl/volumes" json:"-" yaml:"data"`
+	Data string `default:"/var/lib/shadownode/volumes" json:"-" yaml:"data"`
 
 	// Directory where server archives for transferring will be stored.
-	ArchiveDirectory string `default:"/var/lib/pterodactyl/archives" json:"-" yaml:"archive_directory"`
+	ArchiveDirectory string `default:"/var/lib/shadownode/archives" json:"-" yaml:"archive_directory"`
 
 	// Directory where local backups will be stored on the machine.
-	BackupDirectory string `default:"/var/lib/pterodactyl/backups" json:"-" yaml:"backup_directory"`
+	BackupDirectory string `default:"/var/lib/shadownode/backups" json:"-" yaml:"backup_directory"`
 
-	// TmpDirectory specifies where temporary files for Pterodactyl installation processes
+	// TmpDirectory specifies where temporary files for ShadowNode installation processes
 	// should be created. This supports environments running docker-in-docker.
-	TmpDirectory string `default:"/tmp/pterodactyl" json:"-" yaml:"tmp_directory"`
+	TmpDirectory string `default:"/tmp/shadownode" json:"-" yaml:"tmp_directory"`
 
 	// The user that should own all of the server files, and be used for containers.
-	Username string `default:"pterodactyl" yaml:"username"`
+	Username string `default:"shadownode" yaml:"username"`
 
-	// The timezone for this Wings instance. This is detected by Wings automatically if possible,
+	// The timezone for this ShadowNode instance. This is detected by ShadowNode automatically if possible,
 	// and falls back to UTC if not able to be detected. If you need to set this manually, that
 	// can also be done.
 	//
-	// This timezone value is passed into all containers created by Wings.
+	// This timezone value is passed into all containers created by ShadowNode.
 	Timezone string `yaml:"timezone"`
 
 	// Definitions for the user that gets created to ensure that we can quickly access
@@ -161,11 +161,11 @@ type SystemConfiguration struct {
 			Enabled bool `yaml:"enabled" default:"false"`
 			// ContainerUID controls the UID of the user inside the container.
 			// This should likely be set to 0 so the container runs as the user
-			// running Wings.
+			// running ShadowNode.
 			ContainerUID int `yaml:"container_uid" default:"0"`
 			// ContainerGID controls the GID of the user inside the container.
 			// This should likely be set to 0 so the container runs as the user
-			// running Wings.
+			// running ShadowNode.
 			ContainerGID int `yaml:"container_gid" default:"0"`
 		} `yaml:"rootless"`
 
@@ -173,28 +173,28 @@ type SystemConfiguration struct {
 		Gid int `yaml:"gid"`
 	} `yaml:"user"`
 
-	// Passwd controls the mounting of a generated passwd files into containers started by Wings.
+	// Passwd controls the mounting of a generated passwd files into containers started by ShadowNode.
 	Passwd struct {
 		// Enable controls whether generated passwd files should be mounted into containers.
 		//
-		// By default this option is disabled and Wings will not mount any additional passwd
+		// By default this option is disabled and ShadowNode will not mount any additional passwd
 		// files into containers.
 		Enable bool `yaml:"enabled" default:"false"`
 
 		// Directory is the directory on disk where the generated files will be stored.
-		// This directory may be temporary as it will be re-created whenever Wings is started.
+		// This directory may be temporary as it will be re-created whenever ShadowNode is started.
 		//
-		// This path **WILL** be both written to by Wings and mounted into containers created by
-		// Wings. If you are running Wings itself in a container, this path will need to be mounted
-		// into the Wings container as the exact path on the host, which should match the value
+		// This path **WILL** be both written to by ShadowNode and mounted into containers created by
+		// ShadowNode. If you are running ShadowNode itself in a container, this path will need to be mounted
+		// into the ShadowNode container as the exact path on the host, which should match the value
 		// specified here. If you are using SELinux, you will need to make sure this file has the
 		// correct SELinux context in order for containers to use it.
-		Directory string `yaml:"directory" default:"/run/wings/etc"`
+		Directory string `yaml:"directory" default:"/run/shadownode/etc"`
 	} `yaml:"passwd"`
 
 	// The amount of time in seconds that can elapse before a server's disk space calculation is
 	// considered stale and a re-check should occur. DANGER: setting this value too low can seriously
-	// impact system performance and cause massive I/O bottlenecks and high CPU usage for the Wings
+	// impact system performance and cause massive I/O bottlenecks and high CPU usage for the ShadowNode
 	// process.
 	//
 	// Set to 0 to disable disk checking entirely. This will always return 0 for the disk space used
@@ -217,7 +217,7 @@ type SystemConfiguration struct {
 	// frequently modifying a servers' files.
 	CheckPermissionsOnBoot bool `default:"true" yaml:"check_permissions_on_boot"`
 
-	// If set to false Wings will not attempt to write a log rotate configuration to the disk
+	// If set to false ShadowNode will not attempt to write a log rotate configuration to the disk
 	// when it boots and one is not detected.
 	EnableLogRotate bool `default:"true" yaml:"enable_log_rotate"`
 
@@ -239,8 +239,8 @@ type CrashDetection struct {
 	// CrashDetectionEnabled sets if crash detection is enabled globally for all servers on this node.
 	CrashDetectionEnabled bool `default:"true" yaml:"enabled"`
 
-	// Determines if Wings should detect a server that stops with a normal exit code of
-	// "0" as being crashed if the process stopped without any Wings interaction. E.g.
+	// Determines if ShadowNode should detect a server that stops with a normal exit code of
+	// "0" as being crashed if the process stopped without any ShadowNode interaction. E.g.
 	// the user did not press the stop button, but the process stopped cleanly.
 	DetectCleanExitAsCrash bool `default:"true" yaml:"detect_clean_exit_as_crash"`
 
@@ -261,7 +261,7 @@ type Backups struct {
 	// Defaults to 0 (unlimited)
 	WriteLimit int `default:"0" yaml:"write_limit"`
 
-	// CompressionLevel determines how much backups created by wings should be compressed.
+	// CompressionLevel determines how much backups created by shadownode should be compressed.
 	//
 	// "none" -> no compression will be applied
 	// "best_speed" -> uses gzip level 1 for fast speed
@@ -306,11 +306,11 @@ type Configuration struct {
 	// The location from which this configuration instance was instantiated.
 	path string
 
-	// Determines if wings should be running in debug mode. This value is ignored
+	// Determines if shadownode should be running in debug mode. This value is ignored
 	// if the debug flag is passed through the command line arguments.
 	Debug bool
 
-	AppName string `default:"Pterodactyl" json:"app_name" yaml:"app_name"`
+	AppName string `default:"ShadowNode" json:"app_name" yaml:"app_name"`
 
 	// A unique identifier for this node in the Panel.
 	Uuid string
@@ -347,7 +347,7 @@ type Configuration struct {
 
 	// AllowCORSPrivateNetwork sets the `Access-Control-Request-Private-Network` header which
 	// allows client browsers to make requests to internal IP addresses over HTTP.  This setting
-	// is only required by users running Wings without SSL certificates and using internal IP
+	// is only required by users running ShadowNode without SSL certificates and using internal IP
 	// addresses in order to connect. Most users should NOT enable this setting.
 	AllowCORSPrivateNetwork bool `json:"allow_cors_private_network" yaml:"allow_cors_private_network"`
 
@@ -451,22 +451,22 @@ func WriteToDisk(c *Configuration) error {
 	return nil
 }
 
-// EnsurePterodactylUser ensures that the Pterodactyl core user exists on the
+// EnsureShadowNodeUser ensures that the ShadowNode core user exists on the
 // system. This user will be the owner of all data in the root data directory
 // and is used as the user within containers. If files are not owned by this
 // user there will be issues with permissions on Docker mount points.
 //
 // This function IS NOT thread safe and should only be called in the main thread
 // when the application is booting.
-func EnsurePterodactylUser() error {
+func EnsureShadowNodeUser() error {
 	sysName, err := getSystemName()
 	if err != nil {
 		return err
 	}
 
-	// Our way of detecting if wings is running inside of Docker.
+	// Our way of detecting if shadownode is running inside of Docker.
 	if sysName == "distroless" {
-		_config.System.Username = system.FirstNotEmpty(os.Getenv("SHADOWNODE_USERNAME"), "pterodactyl")
+		_config.System.Username = system.FirstNotEmpty(os.Getenv("SHADOWNODE_USERNAME"), "shadownode")
 		_config.System.User.Uid = system.MustInt(system.FirstNotEmpty(os.Getenv("SHADOWNODE_UID"), "988"))
 		_config.System.User.Gid = system.MustInt(system.FirstNotEmpty(os.Getenv("SHADOWNODE_GID"), "988"))
 		return nil
@@ -484,7 +484,7 @@ func EnsurePterodactylUser() error {
 		return nil
 	}
 
-	log.WithField("username", _config.System.Username).Info("checking for pterodactyl system user")
+	log.WithField("username", _config.System.Username).Info("checking for shadownode system user")
 	u, err := user.Lookup(_config.System.Username)
 	// If an error is returned but it isn't the unknown user error just abort
 	// the process entirely. If we did find a user, return it immediately.
@@ -523,7 +523,7 @@ func EnsurePterodactylUser() error {
 	return nil
 }
 
-// ConfigurePasswd generates required passwd files for use with containers started by Wings.
+// ConfigurePasswd generates required passwd files for use with containers started by ShadowNode.
 func ConfigurePasswd() error {
 	passwd := _config.System.Passwd
 	if !passwd.Enable {
@@ -655,7 +655,7 @@ func ConfigureDirectories() error {
 	return nil
 }
 
-// EnableLogRotation writes a logrotate file for wings to the system logrotate
+// EnableLogRotation writes a logrotate file for shadownode to the system logrotate
 // configuration directory if one exists and a logrotate file is not found. This
 // allows us to basically automate away the log rotation for most installs, but
 // also enable users to make modifications on their own.
@@ -663,7 +663,7 @@ func ConfigureDirectories() error {
 // This function IS NOT thread-safe.
 func EnableLogRotation() error {
 	if !_config.System.EnableLogRotate {
-		log.Info("skipping log rotate configuration, disabled in wings config file")
+		log.Info("skipping log rotate configuration, disabled in shadownode config file")
 		return nil
 	}
 
@@ -678,7 +678,7 @@ func EnableLogRotation() error {
 
 	log.Info("no log rotation configuration found: adding file now")
 	// If we've gotten to this point it means the logrotate directory exists on the system
-	// but there is not a file for wings already. In that case, let us write a new file to
+	// but there is not a file for shadownode already. In that case, let us write a new file to
 	// it so files can be rotated easily.
 	f, err := os.Create("/shadow/node")
 	if err != nil {
@@ -732,7 +732,7 @@ func ConfigureTimezone() error {
 			defer cancel()
 			// Okay, file isn't found on this OS, we will try using timedatectl to handle this. If this
 			// command fails, exit, but if it returns a value use that. If no value is returned we will
-			// fall through to UTC to get Wings booted at least.
+			// fall through to UTC to get ShadowNode booted at least.
 			out, err := exec.CommandContext(ctx, "timedatectl").Output()
 			if err != nil {
 				log.WithField("error", err).Warn("failed to execute \"timedatectl\" to determine system timezone, falling back to UTC")

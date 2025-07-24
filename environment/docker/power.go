@@ -21,7 +21,7 @@ import (
 // an egg available for server processes.
 //
 // This process will also confirm that the server environment exists and is in
-// a bootable state. This ensures that unexpected container deletion while Wings
+// a bootable state. This ensures that unexpected container deletion while ShadowNode
 // is running does not result in the server becoming un-bootable.
 func (e *Environment) OnBeforeStart(ctx context.Context) error {
 	// Always destroy and re-create the server container to ensure that synced data from the Panel is used.
@@ -69,7 +69,7 @@ func (e *Environment) Start(ctx context.Context) error {
 		// to the next block of code here. This check was inlined here to guard against
 		// a nil-pointer when checking c.State below.
 		//
-		// @see https://github.com/pterodactyl/panel/issues/2000
+		// @see https://github.com/shadownode/panel/issues/2000
 		if !client.IsErrNotFound(err) {
 			return errors.WrapIf(err, "environment/docker: failed to inspect container")
 		}

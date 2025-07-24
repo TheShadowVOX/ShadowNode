@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  wings:
-    image: ghcr.io/pterodactyl/wings:latest
+  shadownode:
+    image: ghcr.io/shadownode/shadownode:latest
     restart: always
     networks:
-      - wings0
+      - shadownode0
     ports:
       - "8080:8080"
       - "2022:2022"
@@ -14,26 +14,22 @@ services:
       TZ: "UTC"
       SHADOWNODE_UID: 988
       SHADOWNODE_GID: 988
-      SHADOWNODE_USERNAME: pterodactyl
+      SHADOWNODE_USERNAME: shadownode
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/var/lib/docker/containers/:/var/lib/docker/containers/"
-      - "/etc/pterodactyl/:/etc/pterodactyl/"
-      - "/var/lib/pterodactyl/:/var/lib/pterodactyl/"
-      - "/var/log/pterodactyl/:/var/log/pterodactyl/"
-      - "/tmp/pterodactyl/:/tmp/pterodactyl/"
+      - "/etc/shadownode/:/etc/shadownode/"
+      - "/var/lib/shadownode/:/var/lib/shadownode/"
+      - "/var/log/shadownode/:/var/log/shadownode/"
+      - "/tmp/shadownode/:/tmp/shadownode/"
       - "/etc/ssl/certs:/etc/ssl/certs:ro"
-      # you may need /srv/daemon-data if you are upgrading from an old daemon
-      #- "/srv/daemon-data/:/srv/daemon-data/"
-      # Required for ssl if you use let's encrypt. uncomment to use.
-      #- "/etc/letsencrypt/:/etc/letsencrypt/"
 
 networks:
-  wings0:
-    name: wings0
+  shadownode0:
+    name: shadownode0
     driver: bridge
     ipam:
       config:
         - subnet: "172.21.0.0/16"
     driver_opts:
-      com.docker.network.bridge.name: wings0
+      com.docker.network.bridge.name: shadownode0
